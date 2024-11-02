@@ -27,19 +27,19 @@ def get_center_face(img):
 
 
 def face_process(img, output_size=112, plot=False):
-    if isinstance(img, str):
-        img = Image.open(img)
-    if hasattr(img, 'filename'):
-        fname = img.filename
-    else:
-        fname = None
+    if isinstance(img, np.ndarray):
+        img = Image.fromarray(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
+    
     img = img.convert('RGB')
     results = get_center_face(img)
     if results is None:
-        print('No face detected in {}.'.format(fname))
+        print('No face detected.')
         return
+    
     _landmark = results[1]
     aligned_img = face_alignment(np.array(img), _landmark, output_size, plot)
+    
+    # Convert the aligned image back to a PIL Image and return
     aligned_img = Image.fromarray(aligned_img)
     return aligned_img
 
